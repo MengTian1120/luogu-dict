@@ -38,8 +38,6 @@ SPJ|Special Judge / 特殊评测，答案不唯一时由评测程序判断正确
 防AK题|用于阻止选手AK全场的压轴难题，通常出现在比赛最后一题
 AK|All-Killed / 一场比赛中通过所有题目
 rk|rank / 排名
-CF|Codeforces 的缩写，全球最大竞赛平台之一
-AT|AtCoder 的缩写，日本主流竞赛平台
 复杂度|Complexity，算法运行时间或空间的增长量级，用 O() 表示 (oi-wiki.org/basic/complexity/)
 O(1)|常数复杂度，与输入规模无关
 O(n)|线性复杂度，与输入规模成正比
