@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
-    <meta name="theme-color" content="#0f2c3f">
+    <meta name="theme-color" content="#0f2c3f" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>洛谷词典 · 社区语言速查</title>
@@ -15,12 +16,66 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* ========= 深色模式 CSS 变量 ========= */
+        :root {
+            --bg-body: #eef2f7;
+            --bg-main: #f8fafd;
+            --bg-card: white;
+            --bg-sidebar: linear-gradient(180deg, #0f2c3f 0%, #123e56 100%);
+            --sidebar-text: #e6f3ff;
+            --sidebar-text-muted: #9ab3c7;
+            --sidebar-hover: rgba(255,255,255,0.1);
+            --sidebar-active: #2c7da0;
+            --border-light: #e2eaf1;
+            --border-card: #e7eef5;
+            --text-primary: #2b4c6e;
+            --text-secondary: #54738f;
+            --text-abbr: #136b96;
+            --search-bg: #f2f6fa;
+            --search-border: #dce5ef;
+            --search-focus: #2c8fbb;
+            --mark-bg: #ffecb3;
+            --mark-text: #b55a0c;
+            --info-bg: white;
+            --footer-bg: white;
+            --skeleton-bg: #e2e8f0;
+            --shadow-sm: 0 2px 6px rgba(0,0,0,0.08);
+            --shadow-md: 0 12px 22px rgba(0,0,0,0.08);
+        }
+
+        body.dark {
+            --bg-body: #121212;
+            --bg-main: #1e1e2e;
+            --bg-card: #2a2a3a;
+            --bg-sidebar: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            --sidebar-text: #c9d1d9;
+            --sidebar-text-muted: #8b949e;
+            --sidebar-hover: rgba(255,255,255,0.08);
+            --sidebar-active: #2c7da0;
+            --border-light: #2d2d3a;
+            --border-card: #2d2d3a;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --text-abbr: #58a6ff;
+            --search-bg: #2d2d3a;
+            --search-border: #3d3d4a;
+            --search-focus: #58a6ff;
+            --mark-bg: #5c3a00;
+            --mark-text: #ffd966;
+            --info-bg: #2a2a3a;
+            --footer-bg: #2a2a3a;
+            --skeleton-bg: #3d3d4a;
+            --shadow-sm: 0 2px 6px rgba(0,0,0,0.3);
+            --shadow-md: 0 12px 22px rgba(0,0,0,0.3);
+        }
+
         body {
-            background: #eef2f7;
+            background: var(--bg-body);
             font-family: system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Noto Sans', sans-serif;
             height: 100vh;
             overflow: hidden;
             touch-action: pan-y;
+            transition: background-color 0.2s ease;
         }
 
         .app {
@@ -30,15 +85,15 @@
             position: relative;
         }
 
-        /* ========= 侧边栏 - 移动优先优化 ========= */
+        /* ========= 侧边栏 ========= */
         .sidebar {
             position: fixed;
             left: 0;
             top: 0;
             width: 280px;
             height: 100%;
-            background: linear-gradient(180deg, #0f2c3f 0%, #123e56 100%);
-            color: #e6f3ff;
+            background: var(--bg-sidebar);
+            color: var(--sidebar-text);
             display: flex;
             flex-direction: column;
             z-index: 100;
@@ -53,7 +108,6 @@
             transform: translateX(0);
         }
 
-        /* 侧边栏遮罩层 */
         .sidebar-overlay {
             position: fixed;
             top: 0;
@@ -110,7 +164,7 @@
             padding: 0.7rem 1rem;
             font-size: 0.95rem;
             font-weight: 500;
-            color: #d9ecff;
+            color: var(--sidebar-text);
             cursor: pointer;
             border-radius: 0.9rem;
             display: flex;
@@ -121,14 +175,14 @@
         }
 
         .dict-item button:active {
-            background: rgba(255,255,255,0.15);
+            background: var(--sidebar-hover);
             transform: scale(0.98);
         }
 
         .dict-item.active button {
-            background: #2c7da0;
+            background: var(--sidebar-active);
             color: white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            box-shadow: var(--shadow-sm);
         }
 
         .dict-name {
@@ -151,14 +205,14 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
-            background: #f8fafd;
+            background: var(--bg-main);
             width: 100%;
         }
 
         .top-bar {
-            background: white;
+            background: var(--bg-card);
             padding: 0.75rem 1rem;
-            border-bottom: 1px solid #e2eaf1;
+            border-bottom: 1px solid var(--border-light);
             display: flex;
             flex-wrap: wrap;
             align-items: center;
@@ -167,12 +221,15 @@
             top: 0;
             z-index: 5;
             backdrop-filter: blur(10px);
-            background: rgba(255,255,255,0.95);
+            background: rgba(var(--bg-card-rgb, 255,255,255), 0.95);
+        }
+        body.dark .top-bar {
+            background: rgba(42,42,58,0.95);
         }
 
         .menu-toggle {
-            background: #eef3fc;
-            border: none;
+            background: var(--search-bg);
+            border: 1px solid var(--search-border);
             border-radius: 40px;
             padding: 8px 14px;
             font-size: 1.1rem;
@@ -183,11 +240,11 @@
             gap: 6px;
             touch-action: manipulation;
             transition: 0.1s;
-            color: #136b96;
+            color: var(--text-abbr);
         }
 
         .menu-toggle:active {
-            background: #e2e9f2;
+            background: var(--border-light);
             transform: scale(0.96);
         }
 
@@ -203,8 +260,8 @@
             flex: 1;
             display: flex;
             align-items: center;
-            background: #f2f6fa;
-            border: 1px solid #dce5ef;
+            background: var(--search-bg);
+            border: 1px solid var(--search-border);
             border-radius: 40px;
             padding: 0.25rem 0.9rem;
             transition: 0.2s;
@@ -212,13 +269,13 @@
         }
 
         .search-box:focus-within {
-            background: white;
-            border-color: #2c8fbb;
+            background: var(--bg-card);
+            border-color: var(--search-focus);
             box-shadow: 0 0 0 3px rgba(44,143,187,0.1);
         }
 
         .search-box span {
-            color: #7f99b3;
+            color: var(--text-secondary);
             margin-right: 6px;
             font-size: 0.9rem;
         }
@@ -230,6 +287,11 @@
             width: 100%;
             outline: none;
             font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        #searchInput::placeholder {
+            color: var(--text-secondary);
         }
 
         .clear-btn {
@@ -237,7 +299,7 @@
             border: none;
             cursor: pointer;
             font-size: 1rem;
-            color: #8aa4bf;
+            color: var(--text-secondary);
             padding: 0 5px;
             transition: color 0.2s;
             touch-action: manipulation;
@@ -246,35 +308,51 @@
             color: #e05a5a;
         }
 
-        /* 搜索快捷键提示 - 放在搜索框内部右侧 */
         .search-kbd-hint {
             display: flex;
             align-items: center;
             gap: 4px;
-            background: #e9ecef;
+            background: var(--border-light);
             padding: 3px 8px;
             border-radius: 30px;
             font-size: 0.7rem;
             font-family: monospace;
-            color: #5f7f9e;
+            color: var(--text-secondary);
             font-weight: 500;
-            letter-spacing: 0.5px;
             margin-left: 8px;
             flex-shrink: 0;
             pointer-events: none;
         }
         .search-kbd-hint kbd {
-            background: white;
+            background: var(--bg-card);
             padding: 2px 6px;
             border-radius: 6px;
             font-size: 0.7rem;
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--text-primary);
             box-shadow: 0 1px 1px rgba(0,0,0,0.1);
             font-family: monospace;
         }
 
-        /* GitHub 链接 - 移动端图标模式 */
+        /* 深色模式切换按钮 */
+        .theme-toggle {
+            background: var(--search-bg);
+            border: 1px solid var(--search-border);
+            border-radius: 40px;
+            padding: 8px;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.1s;
+            font-size: 1.1rem;
+        }
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
         .github-link {
             display: inline-flex;
             align-items: center;
@@ -302,7 +380,7 @@
         }
 
         .info-area {
-            background: white;
+            background: var(--info-bg);
             margin: 0.75rem 1rem 0 1rem;
             padding: 0.5rem 1rem;
             border-radius: 1rem;
@@ -312,20 +390,20 @@
             flex-wrap: wrap;
             gap: 0.5rem;
             font-size: 0.8rem;
-            border: 1px solid #eaf0f6;
+            border: 1px solid var(--border-light);
         }
 
         .current-dict-name {
-            background: #eef2fa;
+            background: var(--search-bg);
             padding: 0.2rem 0.8rem;
             border-radius: 30px;
             font-weight: 600;
-            color: #136b96;
+            color: var(--text-abbr);
             font-size: 0.8rem;
         }
 
         .stats {
-            color: #54738f;
+            color: var(--text-secondary);
             font-size: 0.75rem;
         }
 
@@ -334,17 +412,31 @@
             flex: 1;
         }
 
+        /* 虚拟滚动容器 */
+        .virtual-scroll-container {
+            height: 100%;
+            overflow-y: auto;
+            position: relative;
+        }
+        .virtual-scroll-content {
+            position: relative;
+        }
+        .virtual-scroll-item {
+            position: absolute;
+            left: 0;
+            right: 0;
+        }
+
         .dict-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 0.9rem;
         }
 
-        /* 卡片移动端优化 */
         .card {
-            background: white;
+            background: var(--bg-card);
             border-radius: 1rem;
-            border: 1px solid #e7eef5;
+            border: 1px solid var(--border-card);
             transition: 0.15s;
             overflow: hidden;
             touch-action: manipulation;
@@ -352,20 +444,19 @@
 
         .card:active {
             transform: scale(0.99);
-            background: #fefefe;
         }
 
         .abbr-area {
-            background: #fafdff;
+            background: var(--bg-card);
             padding: 0.85rem 1rem 0.5rem 1rem;
-            border-bottom: 2px solid #eef3fc;
+            border-bottom: 2px solid var(--border-light);
         }
 
         .abbr {
             font-size: 1.2rem;
             font-weight: 700;
             font-family: 'SF Mono', 'Fira Code', monospace;
-            color: #136b96;
+            color: var(--text-abbr);
             word-break: break-word;
         }
 
@@ -376,12 +467,12 @@
         .meaning {
             font-size: 0.88rem;
             line-height: 1.45;
-            color: #2b4c6e;
+            color: var(--text-primary);
         }
 
         mark {
-            background: #ffecb3;
-            color: #b55a0c;
+            background: var(--mark-bg);
+            color: var(--mark-text);
             border-radius: 10px;
             padding: 0 2px;
         }
@@ -389,30 +480,30 @@
         .empty-message, .error-message, .loading-message {
             text-align: center;
             padding: 2rem 1rem;
-            background: white;
+            background: var(--bg-card);
             border-radius: 1rem;
-            color: #6d8aac;
-            border: 1px dashed #cbdae9;
+            color: var(--text-secondary);
+            border: 1px dashed var(--border-card);
             font-size: 0.9rem;
         }
 
         .skeleton-card {
-            background: white;
+            background: var(--bg-card);
             border-radius: 1rem;
-            border: 1px solid #e7eef5;
+            border: 1px solid var(--border-card);
             padding: 0.85rem 1rem;
             animation: pulse 1.2s infinite ease-in-out;
         }
         .skeleton-abbr {
             height: 1.5rem;
             width: 35%;
-            background: #e2e8f0;
+            background: var(--skeleton-bg);
             border-radius: 16px;
             margin-bottom: 0.8rem;
         }
         .skeleton-line {
             height: 0.85rem;
-            background: #e2e8f0;
+            background: var(--skeleton-bg);
             border-radius: 10px;
             margin-top: 0.5rem;
             width: 90%;
@@ -427,19 +518,18 @@
         }
 
         .footer {
-            background: white;
-            border-top: 1px solid #e2eaf1;
+            background: var(--footer-bg);
+            border-top: 1px solid var(--border-light);
             padding: 0.7rem 1rem;
             text-align: center;
             font-size: 0.7rem;
-            color: #6c8eab;
+            color: var(--text-secondary);
         }
         .footer a {
-            color: #1c6e8f;
+            color: var(--text-abbr);
             text-decoration: none;
         }
 
-        /* 平板适配 */
         @media (min-width: 600px) {
             .dict-grid {
                 grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -453,13 +543,11 @@
             }
         }
 
-        /* 桌面样式：侧边栏常驻，快捷键提示正常显示 */
         @media (min-width: 768px) {
             .sidebar {
                 position: relative;
                 transform: translateX(0) !important;
                 width: 280px;
-                box-shadow: 2px 0 12px rgba(0,0,0,0.08);
             }
             .sidebar-overlay {
                 display: none;
@@ -483,7 +571,6 @@
             }
         }
 
-        /* 移动端：快捷键提示简化或隐藏？保留但稍微缩小 */
         @media (max-width: 480px) {
             .search-kbd-hint kbd {
                 padding: 1px 4px;
@@ -495,7 +582,6 @@
             }
         }
 
-        /* 滚动条美化 */
         .sidebar::-webkit-scrollbar {
             width: 4px;
         }
@@ -511,17 +597,16 @@
             width: 4px;
         }
         .main-content::-webkit-scrollbar-track {
-            background: #eef2f7;
+            background: var(--bg-body);
         }
         .main-content::-webkit-scrollbar-thumb {
-            background: #cbdae9;
+            background: var(--border-card);
             border-radius: 4px;
         }
     </style>
 </head>
 <body>
 <div class="app">
-    <!-- 侧边栏遮罩 -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     
     <aside class="sidebar" id="sidebar">
@@ -529,7 +614,7 @@
             <h2>📚 洛谷词典</h2>
         </div>
         <ul class="dict-list" id="dictList">
-            <li style="padding: 1rem; text-align:center; color:#9ab3c7;">加载词典列表...</li>
+            <li style="padding: 1rem; text-align:center; color:var(--sidebar-text-muted);">加载词典列表...</li>
         </ul>
     </aside>
 
@@ -541,12 +626,12 @@
                     <span>🔍</span>
                     <input type="text" id="searchInput" placeholder="搜索缩写或含义..." autocomplete="off" enterkeyhint="search">
                     <button class="clear-btn" id="clearSearchBtn" aria-label="清除">✖</button>
-                    <!-- Ctrl+K 快捷键提示 -->
                     <div class="search-kbd-hint">
-                        <kbd>⌘</kbd><kbd>K</kbd>
+                        <kbd>Ctrl</kbd><kbd>K</kbd>
                     </div>
                 </div>
             </div>
+            <button class="theme-toggle" id="themeToggle" aria-label="深色模式">🌙</button>
             <a href="https://github.com/MengTian1120/luogu-dict" target="_blank" rel="noopener noreferrer" class="github-link" aria-label="GitHub">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="18" height="18">
                     <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
@@ -578,6 +663,7 @@
     const DICT_LIST_FILE = 'dicts.txt';
     const FETCH_TIMEOUT = 8000;
     const SEARCH_DEBOUNCE_DELAY = 200;
+    const VIRTUAL_SCROLL_THRESHOLD = 400;  // 超过400条启用虚拟滚动
     
     let dictFileNames = [];
     let currentDictIndex = 0;
@@ -585,6 +671,15 @@
     let currentSearchKeyword = '';
     let searchDebounceTimer = null;
     let abortController = null;
+    
+    // 虚拟滚动相关
+    let useVirtualScroll = false;
+    let virtualScrollContainer = null;
+    let virtualScrollContent = null;
+    let itemHeight = 110;  // 估算卡片高度
+    let visibleStartIndex = 0;
+    let visibleEndIndex = 0;
+    let scrollHandler = null;
     
     // DOM 元素
     const sidebar = document.getElementById('sidebar');
@@ -596,8 +691,33 @@
     const dictContent = document.getElementById('dictContent');
     const currentDictDisplaySpan = document.getElementById('currentDictDisplay');
     const statsInfoSpan = document.getElementById('statsInfo');
+    const themeToggle = document.getElementById('themeToggle');
     
-    // 动态调整快捷键提示文字 (Mac/Win)
+    // ---------- 深色模式 ----------
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            document.body.classList.add('dark');
+            themeToggle.textContent = '☀️';
+        } else {
+            document.body.classList.remove('dark');
+            themeToggle.textContent = '🌙';
+        }
+    }
+    
+    function toggleTheme() {
+        if (document.body.classList.contains('dark')) {
+            document.body.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+            themeToggle.textContent = '🌙';
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+            themeToggle.textContent = '☀️';
+        }
+    }
+    
     function updateKbdHint() {
         const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0 || 
                       navigator.userAgent.toUpperCase().indexOf('MAC') >= 0;
@@ -689,6 +809,60 @@
             skeletons += `<div class="skeleton-card"><div class="skeleton-abbr"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>`;
         }
         dictContent.innerHTML = `<div class="dict-grid">${skeletons}</div>`;
+        useVirtualScroll = false;
+    }
+    
+    // 渲染卡片 HTML
+    function renderCardHTML(item, keyword) {
+        return `<div class="card"><div class="abbr-area"><div class="abbr">${highlightText(item.abbr, keyword)}</div></div><div class="meaning-area"><div class="meaning">${highlightText(item.meaning, keyword)}</div></div></div>`;
+    }
+    
+    // 普通渲染（无虚拟滚动）
+    function renderNormal(filtered, keyword) {
+        const gridHtml = filtered.map(item => renderCardHTML(item, keyword)).join('');
+        dictContent.innerHTML = `<div class="dict-grid">${gridHtml}</div>`;
+        useVirtualScroll = false;
+    }
+    
+    // 虚拟滚动渲染
+    function setupVirtualScroll(filtered, keyword) {
+        if (virtualScrollContainer && scrollHandler) {
+            virtualScrollContainer.removeEventListener('scroll', scrollHandler);
+        }
+        
+        dictContent.innerHTML = `<div class="virtual-scroll-container" id="virtualContainer" style="height: ${Math.min(window.innerHeight - 200, 600)}px; overflow-y: auto;"><div class="virtual-scroll-content" id="virtualContent" style="position: relative; height: ${filtered.length * itemHeight}px;"></div></div>`;
+        
+        virtualScrollContainer = document.getElementById('virtualContainer');
+        virtualScrollContent = document.getElementById('virtualContent');
+        
+        function updateVisibleItems() {
+            const scrollTop = virtualScrollContainer.scrollTop;
+            const containerHeight = virtualScrollContainer.clientHeight;
+            visibleStartIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - 5);
+            visibleEndIndex = Math.min(filtered.length, Math.ceil((scrollTop + containerHeight) / itemHeight) + 5);
+            
+            let itemsHtml = '';
+            for (let i = visibleStartIndex; i < visibleEndIndex; i++) {
+                itemsHtml += `<div class="virtual-scroll-item" style="position: absolute; top: ${i * itemHeight}px; left: 0; right: 0; padding: 0 0 0.9rem 0;">${renderCardHTML(filtered[i], keyword)}</div>`;
+            }
+            virtualScrollContent.innerHTML = itemsHtml;
+        }
+        
+        scrollHandler = () => requestAnimationFrame(updateVisibleItems);
+        virtualScrollContainer.addEventListener('scroll', scrollHandler);
+        updateVisibleItems();
+        useVirtualScroll = true;
+    }
+    
+    // 性能优化的渲染入口
+    function renderContentOptimized(filtered, keyword) {
+        const shouldVirtualScroll = filtered.length > VIRTUAL_SCROLL_THRESHOLD;
+        
+        if (shouldVirtualScroll) {
+            setupVirtualScroll(filtered, keyword);
+        } else {
+            renderNormal(filtered, keyword);
+        }
     }
     
     async function fetchWithTimeout(url, timeoutMs) {
@@ -706,7 +880,7 @@
     
     function renderSidebar() {
         if (!dictFileNames.length) {
-            dictListEl.innerHTML = `<li style="padding: 1rem; text-align:center; color:#ffb4a2;">⚠️ 无可用词典<br><span style="font-size:0.7rem;">请确保 dicts.txt 存在</span></li>`;
+            dictListEl.innerHTML = `<li style="padding: 1rem; text-align:center; color:var(--sidebar-text-muted);">⚠️ 无可用词典<br><span style="font-size:0.7rem;">请确保 dicts.txt 存在</span></li>`;
             return;
         }
         const itemsHtml = dictFileNames.map((fileName, idx) => {
@@ -776,6 +950,7 @@
             statsInfoSpan.innerHTML = `❌ 加载失败`;
             updateSidebarCount(index, '!');
             dictContent.innerHTML = `<div class="error-message">❌ 无法加载 “${escapeHtml(displayName)}”<br><span style="font-size:0.8rem;">${escapeHtml(err.message)}</span></div>`;
+            useVirtualScroll = false;
             return false;
         } finally {
             if (abortController && !abortController.signal.aborted) abortController = null;
@@ -787,11 +962,13 @@
             dictContent.innerHTML = `<div class="empty-message">📭 未检测到词典列表<br>请确保 dicts.txt 文件存在</div>`;
             statsInfoSpan.innerHTML = '无词典配置';
             currentDictDisplaySpan.innerText = '无';
+            useVirtualScroll = false;
             return;
         }
         if (currentEntries.length === 0 && !dictContent.innerHTML.includes('加载失败')) {
             dictContent.innerHTML = `<div class="empty-message">📭 当前词典无有效条目</div>`;
             statsInfoSpan.innerHTML = `📚 共 0 条`;
+            useVirtualScroll = false;
             return;
         }
         if (currentEntries.length === 0) return;
@@ -807,12 +984,12 @@
         if (filtered.length === 0) {
             dictContent.innerHTML = `<div class="empty-message">🔎 没有找到 “${escapeHtml(keyword)}” 相关内容</div>`;
             statsInfoSpan.innerHTML = `📚 共 ${currentEntries.length} 条 | 显示 0 条`;
+            useVirtualScroll = false;
             return;
         }
         
-        const gridHtml = filtered.map(item => `<div class="card"><div class="abbr-area"><div class="abbr">${highlightText(item.abbr, keyword)}</div></div><div class="meaning-area"><div class="meaning">${highlightText(item.meaning, keyword)}</div></div></div>`).join('');
-        dictContent.innerHTML = `<div class="dict-grid">${gridHtml}</div>`;
         statsInfoSpan.innerHTML = `📚 共 ${currentEntries.length} 条 | 显示 ${filtered.length} 条`;
+        renderContentOptimized(filtered, keyword);
     }
     
     async function switchToDict(newIndex) {
@@ -888,8 +1065,8 @@
         clearSearchBtn.addEventListener('click', resetSearch);
         menuToggleBtn.addEventListener('click', openSidebar);
         sidebarOverlay.addEventListener('click', closeSidebar);
+        themeToggle.addEventListener('click', toggleTheme);
         
-        // 点击主内容区域关闭侧边栏（移动端）
         const mainContent = document.querySelector('.main-content');
         if (mainContent) {
             mainContent.addEventListener('touchstart', (e) => {
@@ -903,9 +1080,11 @@
                 sidebarOverlay.classList.remove('active');
                 document.body.style.overflow = '';
             }
+            if (useVirtualScroll && virtualScrollContainer) {
+                virtualScrollContainer.style.height = `${Math.min(window.innerHeight - 200, 600)}px`;
+            }
         });
         
-        // Ctrl+K / Cmd+K 聚焦搜索
         document.addEventListener('keydown', (e) => {
             if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
                 e.preventDefault();
@@ -919,6 +1098,7 @@
     
     async function init() {
         updateKbdHint();
+        initTheme();
         bindEvents();
         await loadDictList();
     }
