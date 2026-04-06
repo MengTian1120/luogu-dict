@@ -1,19 +1,20 @@
 Luogu|洛谷，国内最大的OI/ACM竞赛社区与在线评测平台 www.luogu.com.cn
+ACGO|ACGO，国内新兴竞赛编程平台，提供题库与排位赛 www.acgo.cn
+Nowcoder|牛客网，国内竞赛与面试刷题平台 www.nowcoder.com
+AcWing|算法竞赛与面试学习平台 www.acwing.com
+LeetCode|LC，偏向算法面试与求职 leetcode.cn
 Codeforces|CF，全球最活跃的竞赛编程平台 codeforces.com
 AtCoder|AT，日本主流竞赛平台 atcoder.jp
-Nowcoder|牛客网，国内竞赛与面试刷题平台 www.nowcoder.com
-LeetCode|LC，偏向算法面试与求职 leetcode.cn
+UOJ|Universal OJ，通用在线评测系统，支持自定义比赛，拥有众多 UOJ 原创比赛（UOJ Round） uoj.ac
+QOJ|QOJ，收录了大量国际竞赛题目（ICPC、CCPC、NOI等），支持多语言提交，评测环境稳定，界面简洁 qoj.ac
 POJ|北京大学在线评测系统 poj.org
 HDU OJ|杭州电子科技大学在线评测系统 acm.hdu.edu.cn
-UVA|西班牙瓦拉多利德大学OJ onlinejudge.org
 ZOJ|浙江大学在线评测系统 zoj.pintia.cn
-SPOJ|波兰Sphere Online Judge www.spoj.com
-LOJ|LibreOJ，开源OJ平台 loj.ac
-Vjudge|虚拟判题平台，可聚合多个OJ vjudge.net
-AcWing|算法竞赛与面试学习平台 www.acwing.com
+OpenJudge|北大开源OJ系统 openjudge.cn
 51Nod|算法题与面试题平台 www.51nod.com
 USACO|美国信息学奥林匹克官方训练平台 www.usaco.org
+UVA|西班牙瓦拉多利德大学OJ onlinejudge.org
+SPOJ|波兰Sphere Online Judge www.spoj.com
 Timus|乌拉尔大学OJ acm.timus.ru
-OpenJudge|北大开源OJ系统 openjudge.cn
-UOJ|Universal OJ，通用在线评测系统，由VFK等人开发，支持自定义比赛 uoj.ac
-QOJ|QOJ，高质量题目集合平台，收录了大量优质竞赛题目 qoj.ac
+Vjudge|虚拟判题平台，可聚合多个OJ vjudge.net
+LOJ|LibreOJ，开源OJ平台 loj.ac
