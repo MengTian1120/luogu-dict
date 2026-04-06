@@ -5,8 +5,6 @@
 
 **在线访问**：[https://luogu-dict.pages.dev](https://luogu-dict.pages.dev) | GitHub Pages：[https://mengtian1120.github.io/luogu-dict/](https://mengtian1120.github.io/luogu-dict/)
 
-![界面预览](https://github.com/MengTian1120/luogu-dict/blob/main/preview.png?raw=true)
-
 ## ✨ 功能特点
 
 - 📖 **多词典支持**：可同时管理多个词典文件（如“OI语言”、“算法结构”、“社区文化”等）
