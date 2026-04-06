@@ -1,6 +1,6 @@
 Luogu|洛谷，国内最大的OI/ACM竞赛社区与在线评测平台 www.luogu.com.cn
 Codeforces|CF，全球最活跃的竞赛编程平台 codeforces.com
-AtCoder|日本主流竞赛平台 atcoder.jp
+AtCoder|AT，日本主流竞赛平台 atcoder.jp
 Nowcoder|牛客网，国内竞赛与面试刷题平台 www.nowcoder.com
 LeetCode|LC，偏向算法面试与求职 leetcode.cn
 POJ|北京大学在线评测系统 poj.org
@@ -16,3 +16,5 @@ USACO|美国信息学奥林匹克官方训练平台 www.usaco.org
 Timus|乌拉尔大学OJ acm.timus.ru
 EOJ|华东师范大学开源OJ eoj.i64d.com
 OpenJudge|北大开源OJ系统 openjudge.cn
+UOJ|Universal OJ，通用在线评测系统，由VFK等人开发，支持自定义比赛 uoj.ac
+QOJ|QOJ，高质量题目集合平台，收录了大量优质竞赛题目 qoj.ac
