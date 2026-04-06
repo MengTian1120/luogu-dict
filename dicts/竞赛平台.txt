@@ -1,18 +1,18 @@
-Luogu|洛谷，国内最大的OI/ACM竞赛社区与在线评测平台 https://www.luogu.com.cn
-Codeforces|CF，全球最活跃的竞赛编程平台 https://codeforces.com
-AtCoder|日本主流竞赛平台 https://atcoder.jp
-Nowcoder|牛客网，国内竞赛与面试刷题平台 https://www.nowcoder.com
-LeetCode|LC，偏向算法面试与求职 https://leetcode.cn
-POJ|北京大学在线评测系统 http://poj.org
-HDU OJ|杭州电子科技大学在线评测系统 http://acm.hdu.edu.cn
-UVA|西班牙瓦拉多利德大学OJ https://onlinejudge.org
-ZOJ|浙江大学在线评测系统 https://zoj.pintia.cn
-SPOJ|波兰Sphere Online Judge https://www.spoj.com
-LOJ|LibreOJ，开源OJ平台 https://loj.ac
-Vjudge|虚拟判题平台，可聚合多个OJ https://vjudge.net
-AcWing|算法竞赛与面试学习平台 https://www.acwing.com
-51Nod|算法题与面试题平台 https://www.51nod.com
-USACO|美国信息学奥林匹克官方训练平台 http://www.usaco.org
-Timus|乌拉尔大学OJ https://acm.timus.ru
-EOJ|华东师范大学开源OJ https://eoj.i64d.com
-OpenJudge|北大开源OJ系统 http://openjudge.cn
+Luogu|洛谷，国内最大的OI/ACM竞赛社区与在线评测平台 www.luogu.com.cn
+Codeforces|CF，全球最活跃的竞赛编程平台 codeforces.com
+AtCoder|日本主流竞赛平台 atcoder.jp
+Nowcoder|牛客网，国内竞赛与面试刷题平台 www.nowcoder.com
+LeetCode|LC，偏向算法面试与求职 leetcode.cn
+POJ|北京大学在线评测系统 poj.org
+HDU OJ|杭州电子科技大学在线评测系统 acm.hdu.edu.cn
+UVA|西班牙瓦拉多利德大学OJ onlinejudge.org
+ZOJ|浙江大学在线评测系统 zoj.pintia.cn
+SPOJ|波兰Sphere Online Judge www.spoj.com
+LOJ|LibreOJ，开源OJ平台 loj.ac
+Vjudge|虚拟判题平台，可聚合多个OJ vjudge.net
+AcWing|算法竞赛与面试学习平台 www.acwing.com
+51Nod|算法题与面试题平台 www.51nod.com
+USACO|美国信息学奥林匹克官方训练平台 www.usaco.org
+Timus|乌拉尔大学OJ acm.timus.ru
+EOJ|华东师范大学开源OJ eoj.i64d.com
+OpenJudge|北大开源OJ系统 openjudge.cn
