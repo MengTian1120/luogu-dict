@@ -3,7 +3,7 @@
 洛谷社区缩写/术语词典，支持多词典切换与实时搜索。  
 项目旨在帮助新手快速理解 OI/ACM 竞赛圈以及洛谷社区的黑话、梗和专业术语。
 
-**在线访问**：[https://luogudict.pages.dev](https://luogudict.pages.dev) | GitHub Pages：[https://mengtian1120.github.io/luogu-dict/](https://mengtian1120.github.io/luogu-dict/)
+**在线访问**：[https://luogu-dict.pages.dev](https://luogudict.pages.dev) | GitHub Pages：[https://mengtian1120.github.io/luogu-dict/](https://mengtian1120.github.io/luogu-dict/)
 
 ![界面预览](https://github.com/MengTian1120/luogu-dict/blob/main/preview.png?raw=true)
 
