@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>洛谷词典 · 社区语言速查</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f7;
+            font-family: system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Noto Sans', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+        }
+
+        /* ========= 侧边栏 ========= */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #0f2c3f 0%, #123e56 100%);
+            color: #e6f3ff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+            z-index: 10;
+            overflow-y: auto;
+            transition: transform 0.2s ease;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem 1.2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dict-list {
+            flex: 1;
+            padding: 1rem 0.5rem;
+            list-style: none;
+        }
+
+        .dict-item {
+            margin: 0.3rem 0.5rem;
+            border-radius: 1rem;
+            transition: all 0.2s;
+        }
+
+        .dict-item button {
+            width: 100%;
+            text-align: left;
+            background: transparent;
+            border: none;
+            padding: 0.7rem 1rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #d9ecff;
+            cursor: pointer;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: 0.2s;
+        }
+
+        .dict-item button:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .dict-item.active button {
+            background: #2c7da0;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .dict-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            word-break: break-word;
+        }
+
+        .dict-count {
+            font-size: 0.7rem;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 30px;
+        }
+
+        /* ========= 右侧主内容 ========= */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: #f8fafd;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e2eaf1;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .search-section {
+            flex: 2;
+            min-width: 200px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: #f2f6fa;
+            border: 1px solid #dce5ef;
+            border-radius: 60px;
+            padding: 0.3rem 1rem;
+            transition: 0.2s;
+        }
+
+        .search-box:focus-within {
+            background: white;
+            border-color: #2c8fbb;
+            box-shadow: 0 0 0 3px rgba(44,143,187,0.1);
+        }
+
+        .search-box span {
+            color: #7f99b3;
+            margin-right: 8px;
+        }
+
+        #searchInput {
+            border: none;
+            background: transparent;
+            padding: 0.6rem 0;
+            width: 100%;
+            outline: none;
+            font-size: 0.95rem;
+        }
+
+        .clear-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: #8aa4bf;
+            padding: 0 6px;
+        }
+
+        .info-area {
+            background: white;
+            margin: 1rem 1.5rem 0 1.5rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            border: 1px solid #eaf0f6;
+        }
+
+        .current-dict-name {
+            background: #eef2fa;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-weight: 600;
+            color: #136b96;
+        }
+
+        .stats {
+            color: #54738f;
+        }
+
+        .dict-content {
+            padding: 1.2rem 1.5rem 2rem 1.5rem;
+            flex: 1;
+        }
+
+        .dict-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1.2rem;
+            border: 1px solid #e7eef5;
+            transition: 0.2s;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 22px rgba(0,0,0,0.08);
+            border-color: #caddf0;
+        }
+
+        .abbr-area {
+            background: #fafdff;
+            padding: 1rem 1.2rem 0.6rem 1.2rem;
+            border-bottom: 2px solid #eef3fc;
+        }
+
+        .abbr {
+            font-size: 1.4rem;
+            font-weight: 700;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            color: #136b96;
+            word-break: break-word;
+        }
+
+        .meaning-area {
+            padding: 1rem 1.2rem 1.2rem 1.2rem;
+        }
+
+        .meaning {
+            font-size: 0.94rem;
+            line-height: 1.45;
+            color: #2b4c6e;
+        }
+
+        mark {
+            background: #ffecb3;
+            color: #b55a0c;
+            border-radius: 12px;
+            padding: 0 2px;
+        }
+
+        .empty-message, .error-message, .loading-message {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            background: white;
+            border-radius: 1.5rem;
+            color: #6d8aac;
+            border: 1px dashed #cbdae9;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: #eef3fc;
+            border: none;
+            border-radius: 40px;
+            padding: 6px 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        /* 页脚样式 */
+        .footer {
+            background: white;
+            border-top: 1px solid #e2eaf1;
+            padding: 0.8rem 1.5rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #6c8eab;
+            margin-top: auto;
+        }
+        .footer a {
+            color: #1c6e8f;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 720px) {
+            .sidebar {
+                width: 260px;
+                position: fixed;
+                left: 0;
+                top: 0;
+                height: 100%;
+                z-index: 20;
+                transform: translateX(-100%);
+                transition: transform 0.2s;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .menu-toggle {
+                display: inline-block;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>📚 洛谷词典</h2>
+        </div>
+        <ul class="dict-list" id="dictList">
+            <li style="padding: 1rem; text-align:center; color:#9ab3c7;">加载词典列表...</li>
+        </ul>
+    </aside>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <button class="menu-toggle" id="menuToggleBtn" aria-label="菜单">☰ 词典</button>
+            <div class="search-section">
+                <div class="search-box">
+                    <span>🔍</span>
+                    <input type="text" id="searchInput" placeholder="搜索缩写或含义..." autocomplete="off">
+                    <button class="clear-btn" id="clearSearchBtn">✖</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-area">
+            <div><span class="current-dict-name" id="currentDictDisplay">-</span></div>
+            <div class="stats" id="statsInfo">📋 未选择词典</div>
+        </div>
+
+        <div class="dict-content" id="dictContent">
+            <div class="loading-message">✨ 请从左侧选择一个词典</div>
+        </div>
+
+        <!-- 页脚：洛谷账号 + 免责声明 -->
+        <div class="footer">
+            <span>📖 洛谷词典 · 由 </span>
+            <a href="https://www.luogu.com.cn/user/2119974" target="_blank" rel="noopener noreferrer">@MengTian1120</a>
+            <span> 维护 · 内容来源于社区，仅供学习交流，如有侵权或不当之处请联系删除。</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ---------- 全局 ----------
+    const DICT_DIR = 'dicts/';
+    const DICT_LIST_FILE = 'dicts.txt';
+    
+    let dictFileNames = [];          // 文件名列表 ['slang.txt', ...]
+    let currentDictIndex = 0;
+    let currentEntries = [];
+    let currentSearchKeyword = '';
+    
+    // DOM 元素
+    const sidebar = document.getElementById('sidebar');
+    const menuToggleBtn = document.getElementById('menuToggleBtn');
+    const dictListEl = document.getElementById('dictList');
+    const searchInput = document.getElementById('searchInput');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    const dictContent = document.getElementById('dictContent');
+    const currentDictDisplaySpan = document.getElementById('currentDictDisplay');
+    const statsInfoSpan = document.getElementById('statsInfo');
+    
+    // ---------- 辅助函数 ----------
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function highlightText(text, keyword) {
+        if (!keyword || keyword.trim() === '') return escapeHtml(text);
+        const kw = escapeHtml(keyword).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        if (kw === '') return escapeHtml(text);
+        const regex = new RegExp(`(${kw})`, 'gi');
+        return escapeHtml(text).replace(regex, `<mark>$1</mark>`);
+    }
+    
+    function parseTxtToEntries(text) {
+        const lines = text.split(/\r?\n/);
+        const entries = [];
+        for (let line of lines) {
+            line = line.trim();
+            if (line === '' || line.startsWith('#')) continue;
+            const sepIndex = line.indexOf('|');
+            if (sepIndex === -1) continue;
+            let abbr = line.substring(0, sepIndex).trim();
+            let meaning = line.substring(sepIndex + 1).trim();
+            if (abbr === '' || meaning === '') continue;
+            entries.push({ abbr, meaning });
+        }
+        return entries;
+    }
+    
+    function getDisplayNameFromFile(fileName) {
+        if (fileName.toLowerCase().endsWith('.txt')) {
+            return fileName.slice(0, -4);
+        }
+        return fileName;
+    }
+    
+    // 渲染侧边栏
+    function renderSidebar() {
+        if (!dictFileNames.length) {
+            dictListEl.innerHTML = `<li style="padding: 1rem; text-align:center; color:#ffb4a2;">⚠️ 无可用词典<br><span style="font-size:0.7rem;">请配置 dicts.txt</span></li>`;
+            return;
+        }
+        const itemsHtml = dictFileNames.map((fileName, idx) => {
+            const displayName = getDisplayNameFromFile(fileName);
+            const activeClass = (idx === currentDictIndex) ? 'active' : '';
+            return `
+                <li class="dict-item ${activeClass}" data-index="${idx}">
+                    <button class="dict-btn">
+                        <span class="dict-name">📖 ${escapeHtml(displayName)}</span>
+                        <span class="dict-count" id="count-${idx}">?</span>
+                    </button>
+                </li>
+            `;
+        }).join('');
+        dictListEl.innerHTML = itemsHtml;
+        
+        document.querySelectorAll('.dict-item').forEach(item => {
+            const btn = item.querySelector('.dict-btn');
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    const idx = parseInt(item.getAttribute('data-index'), 10);
+                    if (!isNaN(idx) && idx !== currentDictIndex) {
+                        switchToDict(idx);
+                    }
+                });
+            }
+        });
+    }
+    
+    function updateSidebarActive() {
+        document.querySelectorAll('.dict-item').forEach((item, idx) => {
+            const indexAttr = parseInt(item.getAttribute('data-index'), 10);
+            if (indexAttr === currentDictIndex) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
+    
+    function updateSidebarCount(index, count) {
+        const countSpan = document.getElementById(`count-${index}`);
+        if (countSpan) countSpan.innerText = count;
+    }
+    
+    // 加载词典
+    async function loadDictionary(index) {
+        if (!dictFileNames.length || index >= dictFileNames.length || index < 0) {
+            currentEntries = [];
+            renderContent();
+            return false;
+        }
+        const fileName = dictFileNames[index];
+        const filePath = DICT_DIR + fileName;
+        const displayName = getDisplayNameFromFile(fileName);
+        currentDictDisplaySpan.innerText = displayName;
+        statsInfoSpan.innerHTML = '⏳ 加载中...';
+        dictContent.innerHTML = `<div class="loading-message">📂 正在加载词典 “${escapeHtml(displayName)}” ...</div>`;
+        
+        try {
+            const response = await fetch(filePath, { cache: 'no-store' });
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            const text = await response.text();
+            const entries = parseTxtToEntries(text);
+            if (entries.length === 0) {
+                currentEntries = [];
+                statsInfoSpan.innerHTML = `⚠️ 无有效条目`;
+                updateSidebarCount(index, 0);
+                renderContent();
+                return false;
+            }
+            currentEntries = entries;
+            statsInfoSpan.innerHTML = `✅ 共 ${currentEntries.length} 条`;
+            updateSidebarCount(index, currentEntries.length);
+            renderContent();
+            return true;
+        } catch (err) {
+            console.error(err);
+            currentEntries = [];
+            statsInfoSpan.innerHTML = `❌ 加载失败`;
+            updateSidebarCount(index, '!');
+            dictContent.innerHTML = `<div class="error-message">❌ 无法加载词典 “${escapeHtml(fileName)}”<br>请确认文件存在于 ${DICT_DIR} 目录下。</div>`;
+            return false;
+        }
+    }
+    
+    // 渲染右侧内容（带搜索过滤）
+    function renderContent() {
+        if (!dictFileNames.length) {
+            dictContent.innerHTML = `<div class="empty-message">📭 未检测到词典列表<br>缺少文件 dicts.txt</div>`;
+            statsInfoSpan.innerHTML = '无词典配置';
+            currentDictDisplaySpan.innerText = '无';
+            return;
+        }
+        if (currentEntries.length === 0) {
+            if (!dictContent.innerHTML.includes('加载失败') && !dictContent.innerHTML.includes('无有效条目')) {
+                dictContent.innerHTML = `<div class="empty-message">📭 当前词典无有效条目</div>`;
+            }
+            statsInfoSpan.innerHTML = `📚 共 0 条`;
+            return;
+        }
+        
+        const keyword = currentSearchKeyword.trim();
+        let filtered = currentEntries;
+        if (keyword !== '') {
+            const lowerKw = keyword.toLowerCase();
+            filtered = currentEntries.filter(item => 
+                item.abbr.toLowerCase().includes(lowerKw) || 
+                item.meaning.toLowerCase().includes(lowerKw)
+            );
+        }
+        
+        if (filtered.length === 0) {
+            dictContent.innerHTML = `<div class="empty-message">🔎 没有找到 “${escapeHtml(keyword)}” 相关内容</div>`;
+            statsInfoSpan.innerHTML = `📚 共 ${currentEntries.length} 条 | 显示 0 条`;
+            return;
+        }
+        
+        const gridHtml = filtered.map(item => {
+            const highAbbr = highlightText(item.abbr, keyword);
+            const highMeaning = highlightText(item.meaning, keyword);
+            return `
+                <div class="card">
+                    <div class="abbr-area">
+                        <div class="abbr">${highAbbr}</div>
+                    </div>
+                    <div class="meaning-area">
+                        <div class="meaning">${highMeaning}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        dictContent.innerHTML = `<div class="dict-grid">${gridHtml}</div>`;
+        statsInfoSpan.innerHTML = `📚 共 ${currentEntries.length} 条 | 显示 ${filtered.length} 条`;
+    }
+    
+    // 切换词典
+    async function switchToDict(newIndex) {
+        if (newIndex === currentDictIndex) return;
+        currentDictIndex = newIndex;
+        searchInput.value = '';
+        currentSearchKeyword = '';
+        updateSidebarActive();
+        if (dictFileNames[currentDictIndex]) {
+            currentDictDisplaySpan.innerText = getDisplayNameFromFile(dictFileNames[currentDictIndex]);
+        } else {
+            currentDictDisplaySpan.innerText = '?';
+        }
+        await loadDictionary(currentDictIndex);
+    }
+    
+    // 加载词典列表文件 dicts.txt
+    async function loadDictList() {
+        try {
+            const response = await fetch(DICT_LIST_FILE, { cache: 'no-store' });
+            if (!response.ok) {
+                throw new Error(`dicts.txt 不存在`);
+            }
+            const text = await response.text();
+            const lines = text.split(/\r?\n/);
+            const files = [];
+            for (let line of lines) {
+                line = line.trim();
+                if (line === '' || line.startsWith('#')) continue;
+                files.push(line);
+            }
+            if (files.length === 0) {
+                throw new Error('dicts.txt 内容为空');
+            }
+            dictFileNames = files;
+            renderSidebar();
+            currentDictIndex = 0;
+            updateSidebarActive();
+            if (dictFileNames.length) {
+                currentDictDisplaySpan.innerText = getDisplayNameFromFile(dictFileNames[0]);
+                await loadDictionary(0);
+            } else {
+                dictContent.innerHTML = `<div class="empty-message">📭 dicts.txt 无有效词典文件名</div>`;
+            }
+        } catch (err) {
+            console.error(err);
+            dictFileNames = [];
+            dictListEl.innerHTML = `<li style="padding:1rem;text-align:center;color:#ffb4a2;">❌ 加载 dicts.txt 失败<br><span style="font-size:0.7rem;">${escapeHtml(err.message)}</span></li>`;
+            dictContent.innerHTML = `<div class="error-message">❌ 无法读取词典列表文件 dicts.txt</div>`;
+            currentDictDisplaySpan.innerText = '无';
+            statsInfoSpan.innerHTML = '列表缺失';
+        }
+    }
+    
+    // 搜索事件
+    function onSearchInput() {
+        currentSearchKeyword = searchInput.value;
+        renderContent();
+    }
+    
+    function resetSearch() {
+        searchInput.value = '';
+        currentSearchKeyword = '';
+        renderContent();
+        searchInput.focus();
+    }
+    
+    // 移动端侧边栏
+    function toggleSidebar() {
+        sidebar.classList.toggle('open');
+    }
+    
+    function closeSidebarOnClickOutside(e) {
+        if (window.innerWidth <= 720 && sidebar.classList.contains('open')) {
+            if (!sidebar.contains(e.target) && !menuToggleBtn.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
+        }
+    }
+    
+    function bindEvents() {
+        searchInput.addEventListener('input', onSearchInput);
+        clearSearchBtn.addEventListener('click', resetSearch);
+        menuToggleBtn.addEventListener('click', toggleSidebar);
+        document.body.addEventListener('click', closeSidebarOnClickOutside);
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 720 && sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
+        });
+    }
+    
+    async function init() {
+        bindEvents();
+        await loadDictList();
+    }
+    
+    init();
+</script>
+</body>
+</html>

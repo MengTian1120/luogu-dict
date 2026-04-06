@@ -1,0 +1,6 @@
+LG|洛谷 国内知名竞赛平台
+CF|Codeforces 全球知名竞赛平台
+AT|AtCoder 日本竞赛平台
+USACO|美国信息学奥林匹克竞赛
+SPOJ|Sphere Online Judge 题目多样
+LOJ|LibreOJ 开源OJ平台
