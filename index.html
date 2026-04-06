@@ -2,13 +2,17 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <meta name="theme-color" content="#0f2c3f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>洛谷词典 · 社区语言速查</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -16,34 +20,70 @@
             font-family: system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Noto Sans', sans-serif;
             height: 100vh;
             overflow: hidden;
+            touch-action: pan-y;
         }
 
         .app {
             display: flex;
             height: 100vh;
             width: 100%;
+            position: relative;
         }
 
-        /* ========= 侧边栏 ========= */
+        /* ========= 侧边栏 - 移动优先优化 ========= */
         .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
             width: 280px;
+            height: 100%;
             background: linear-gradient(180deg, #0f2c3f 0%, #123e56 100%);
             color: #e6f3ff;
             display: flex;
             flex-direction: column;
-            box-shadow: 2px 0 12px rgba(0,0,0,0.08);
-            z-index: 10;
+            z-index: 100;
+            transform: translateX(-100%);
+            transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: 2px 0 20px rgba(0,0,0,0.15);
             overflow-y: auto;
-            transition: transform 0.2s ease;
+            overscroll-behavior: contain;
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        /* 侧边栏遮罩层 */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 90;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s;
+            backdrop-filter: blur(2px);
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
         }
 
         .sidebar-header {
-            padding: 1.5rem 1.2rem;
-            border-bottom: 1px solid rgba(255,255,255,0.15);
+            padding: 1.2rem 1.2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+            position: sticky;
+            top: 0;
+            background: inherit;
+            z-index: 2;
         }
 
         .sidebar-header h2 {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -52,13 +92,13 @@
 
         .dict-list {
             flex: 1;
-            padding: 1rem 0.5rem;
+            padding: 0.75rem 0.5rem;
             list-style: none;
         }
 
         .dict-item {
-            margin: 0.3rem 0.5rem;
-            border-radius: 1rem;
+            margin: 0.2rem 0.5rem;
+            border-radius: 0.9rem;
             transition: all 0.2s;
         }
 
@@ -72,16 +112,17 @@
             font-weight: 500;
             color: #d9ecff;
             cursor: pointer;
-            border-radius: 1rem;
+            border-radius: 0.9rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
             transition: 0.2s;
+            touch-action: manipulation;
         }
 
-        .dict-item button:hover {
-            background: rgba(255,255,255,0.1);
-            color: white;
+        .dict-item button:active {
+            background: rgba(255,255,255,0.15);
+            transform: scale(0.98);
         }
 
         .dict-item.active button {
@@ -111,27 +152,50 @@
             flex-direction: column;
             overflow-y: auto;
             background: #f8fafd;
+            width: 100%;
         }
 
         .top-bar {
             background: white;
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1rem;
             border-bottom: 1px solid #e2eaf1;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
+            gap: 0.75rem;
             position: sticky;
             top: 0;
             z-index: 5;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+        }
+
+        .menu-toggle {
+            background: #eef3fc;
+            border: none;
+            border-radius: 40px;
+            padding: 8px 14px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            touch-action: manipulation;
+            transition: 0.1s;
+            color: #136b96;
+        }
+
+        .menu-toggle:active {
+            background: #e2e9f2;
+            transform: scale(0.96);
         }
 
         .search-section {
             flex: 2;
-            min-width: 200px;
+            min-width: 160px;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             position: relative;
         }
 
@@ -141,8 +205,8 @@
             align-items: center;
             background: #f2f6fa;
             border: 1px solid #dce5ef;
-            border-radius: 60px;
-            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            padding: 0.25rem 0.9rem;
             transition: 0.2s;
         }
 
@@ -154,7 +218,8 @@
 
         .search-box span {
             color: #7f99b3;
-            margin-right: 8px;
+            margin-right: 6px;
+            font-size: 0.9rem;
         }
 
         #searchInput {
@@ -170,114 +235,161 @@
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #8aa4bf;
-            padding: 0 6px;
+            padding: 0 5px;
             transition: color 0.2s;
+            touch-action: manipulation;
         }
-        .clear-btn:hover {
+        .clear-btn:active {
             color: #e05a5a;
         }
 
-        /* 搜索快捷键提示 */
         .search-hint {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.7rem;
-            background: #e9ecef;
-            padding: 2px 8px;
-            border-radius: 30px;
-            color: #5f7f9e;
-            pointer-events: none;
-            font-family: monospace;
-        }
-        @media (max-width: 560px) {
-            .search-hint { display: none; }
+            display: none;
         }
 
-        /* GitHub 链接按钮样式 */
+        /* GitHub 链接 - 移动端图标模式 */
         .github-link {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
             background: #24292e;
             color: white;
-            padding: 6px 14px;
-            border-radius: 30px;
+            padding: 8px;
+            border-radius: 40px;
             text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 500;
             transition: 0.2s;
-            margin-left: auto;
+            width: 36px;
+            height: 36px;
         }
-        .github-link:hover {
-            background: #0366d6;
-            transform: translateY(-1px);
+        .github-link span {
+            display: none;
         }
         .github-link svg {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             fill: white;
+        }
+        .github-link:active {
+            background: #0366d6;
+            transform: scale(0.95);
         }
 
         .info-area {
             background: white;
-            margin: 1rem 1.5rem 0 1.5rem;
-            padding: 0.6rem 1.2rem;
-            border-radius: 1.2rem;
+            margin: 0.75rem 1rem 0 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            font-size: 0.85rem;
+            gap: 0.5rem;
+            font-size: 0.8rem;
             border: 1px solid #eaf0f6;
         }
 
         .current-dict-name {
             background: #eef2fa;
-            padding: 0.2rem 1rem;
+            padding: 0.2rem 0.8rem;
             border-radius: 30px;
             font-weight: 600;
             color: #136b96;
+            font-size: 0.8rem;
         }
 
         .stats {
             color: #54738f;
+            font-size: 0.75rem;
         }
 
         .dict-content {
-            padding: 1.2rem 1.5rem 2rem 1.5rem;
+            padding: 0.75rem 1rem 1.5rem 1rem;
             flex: 1;
         }
 
         .dict-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.2rem;
+            grid-template-columns: 1fr;
+            gap: 0.9rem;
         }
 
-        /* 骨架屏卡片样式 */
+        /* 卡片移动端优化 */
+        .card {
+            background: white;
+            border-radius: 1rem;
+            border: 1px solid #e7eef5;
+            transition: 0.15s;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        .card:active {
+            transform: scale(0.99);
+            background: #fefefe;
+        }
+
+        .abbr-area {
+            background: #fafdff;
+            padding: 0.85rem 1rem 0.5rem 1rem;
+            border-bottom: 2px solid #eef3fc;
+        }
+
+        .abbr {
+            font-size: 1.2rem;
+            font-weight: 700;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            color: #136b96;
+            word-break: break-word;
+        }
+
+        .meaning-area {
+            padding: 0.85rem 1rem 1rem 1rem;
+        }
+
+        .meaning {
+            font-size: 0.88rem;
+            line-height: 1.45;
+            color: #2b4c6e;
+        }
+
+        mark {
+            background: #ffecb3;
+            color: #b55a0c;
+            border-radius: 10px;
+            padding: 0 2px;
+        }
+
+        .empty-message, .error-message, .loading-message {
+            text-align: center;
+            padding: 2rem 1rem;
+            background: white;
+            border-radius: 1rem;
+            color: #6d8aac;
+            border: 1px dashed #cbdae9;
+            font-size: 0.9rem;
+        }
+
         .skeleton-card {
             background: white;
-            border-radius: 1.2rem;
+            border-radius: 1rem;
             border: 1px solid #e7eef5;
-            padding: 1rem 1.2rem;
+            padding: 0.85rem 1rem;
             animation: pulse 1.2s infinite ease-in-out;
         }
         .skeleton-abbr {
-            height: 1.8rem;
-            width: 40%;
+            height: 1.5rem;
+            width: 35%;
             background: #e2e8f0;
-            border-radius: 20px;
-            margin-bottom: 1rem;
+            border-radius: 16px;
+            margin-bottom: 0.8rem;
         }
         .skeleton-line {
-            height: 1rem;
+            height: 0.85rem;
             background: #e2e8f0;
-            border-radius: 12px;
-            margin-top: 0.6rem;
+            border-radius: 10px;
+            margin-top: 0.5rem;
             width: 90%;
         }
         .skeleton-line.short {
@@ -289,116 +401,92 @@
             100% { opacity: 0.6; }
         }
 
-        .card {
-            background: white;
-            border-radius: 1.2rem;
-            border: 1px solid #e7eef5;
-            transition: 0.2s;
-            overflow: hidden;
-        }
-
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 22px rgba(0,0,0,0.08);
-            border-color: #caddf0;
-        }
-
-        .abbr-area {
-            background: #fafdff;
-            padding: 1rem 1.2rem 0.6rem 1.2rem;
-            border-bottom: 2px solid #eef3fc;
-        }
-
-        .abbr {
-            font-size: 1.4rem;
-            font-weight: 700;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            color: #136b96;
-            word-break: break-word;
-        }
-
-        .meaning-area {
-            padding: 1rem 1.2rem 1.2rem 1.2rem;
-        }
-
-        .meaning {
-            font-size: 0.94rem;
-            line-height: 1.45;
-            color: #2b4c6e;
-        }
-
-        mark {
-            background: #ffecb3;
-            color: #b55a0c;
-            border-radius: 12px;
-            padding: 0 2px;
-        }
-
-        .empty-message, .error-message, .loading-message {
-            text-align: center;
-            padding: 3rem 1.5rem;
-            background: white;
-            border-radius: 1.5rem;
-            color: #6d8aac;
-            border: 1px dashed #cbdae9;
-        }
-
-        .menu-toggle {
-            display: none;
-            background: #eef3fc;
-            border: none;
-            border-radius: 40px;
-            padding: 6px 12px;
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
-
         .footer {
             background: white;
             border-top: 1px solid #e2eaf1;
-            padding: 0.8rem 1.5rem;
+            padding: 0.7rem 1rem;
             text-align: center;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #6c8eab;
-            margin-top: auto;
         }
         .footer a {
             color: #1c6e8f;
             text-decoration: none;
-            font-weight: 500;
-        }
-        .footer a:hover {
-            text-decoration: underline;
         }
 
-        @media (max-width: 720px) {
-            .sidebar {
-                width: 260px;
-                position: fixed;
-                left: 0;
-                top: 0;
-                height: 100%;
-                z-index: 20;
-                transform: translateX(-100%);
-                transition: transform 0.2s;
+        /* 平板适配 */
+        @media (min-width: 600px) {
+            .dict-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 1rem;
             }
-            .sidebar.open {
-                transform: translateX(0);
+            .top-bar {
+                padding: 0.9rem 1.5rem;
+            }
+            .dict-content {
+                padding: 1rem 1.5rem 1.5rem;
+            }
+        }
+
+        /* 桌面样式：侧边栏常驻 */
+        @media (min-width: 768px) {
+            .sidebar {
+                position: relative;
+                transform: translateX(0) !important;
+                width: 280px;
+                box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+            }
+            .sidebar-overlay {
+                display: none;
             }
             .menu-toggle {
-                display: inline-block;
-            }
-            .github-link span {
                 display: none;
             }
             .github-link {
-                padding: 6px 10px;
+                width: auto;
+                padding: 6px 14px;
             }
+            .github-link span {
+                display: inline;
+            }
+            .github-link svg {
+                width: 18px;
+                height: 18px;
+            }
+            .top-bar {
+                padding: 1rem 1.5rem;
+            }
+        }
+
+        /* 滚动条美化 */
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+        }
+        
+        .main-content::-webkit-scrollbar {
+            width: 4px;
+        }
+        .main-content::-webkit-scrollbar-track {
+            background: #eef2f7;
+        }
+        .main-content::-webkit-scrollbar-thumb {
+            background: #cbdae9;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
 <div class="app">
+    <!-- 侧边栏遮罩 -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h2>📚 洛谷词典</h2>
@@ -414,12 +502,11 @@
             <div class="search-section">
                 <div class="search-box">
                     <span>🔍</span>
-                    <input type="text" id="searchInput" placeholder="搜索缩写或含义..." autocomplete="off">
+                    <input type="text" id="searchInput" placeholder="搜索缩写或含义..." autocomplete="off" enterkeyhint="search">
                     <button class="clear-btn" id="clearSearchBtn" aria-label="清除">✖</button>
                 </div>
-                <div class="search-hint">Ctrl+K / ⌘K</div>
             </div>
-            <a href="https://github.com/MengTian1120/luogu-dict" target="_blank" rel="noopener noreferrer" class="github-link">
+            <a href="https://github.com/MengTian1120/luogu-dict" target="_blank" rel="noopener noreferrer" class="github-link" aria-label="GitHub">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="18" height="18">
                     <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
                 </svg>
@@ -439,7 +526,7 @@
         <div class="footer">
             <span>📖 洛谷词典 · 由 </span>
             <a href="https://www.luogu.com.cn/user/2119974" target="_blank" rel="noopener noreferrer">@MengTian1120</a>
-            <span> 维护 · 内容来源于社区，仅供学习交流，如有侵权或不当之处请联系删除。</span>
+            <span> 维护 · 内容来源于社区，仅供学习交流</span>
         </div>
     </div>
 </div>
@@ -448,18 +535,19 @@
     // ---------- 全局配置 ----------
     const DICT_DIR = 'dicts/';
     const DICT_LIST_FILE = 'dicts.txt';
-    const FETCH_TIMEOUT = 8000;          // 8秒超时
-    const SEARCH_DEBOUNCE_DELAY = 200;    // 搜索防抖延迟(ms)
+    const FETCH_TIMEOUT = 8000;
+    const SEARCH_DEBOUNCE_DELAY = 200;
     
-    let dictFileNames = [];          // 文件名列表 ['slang.txt', ...]
+    let dictFileNames = [];
     let currentDictIndex = 0;
     let currentEntries = [];
     let currentSearchKeyword = '';
     let searchDebounceTimer = null;
-    let abortController = null;       // 用于取消过时的 fetch
+    let abortController = null;
     
     // DOM 元素
     const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
     const menuToggleBtn = document.getElementById('menuToggleBtn');
     const dictListEl = document.getElementById('dictList');
     const searchInput = document.getElementById('searchInput');
@@ -494,10 +582,7 @@
             line = line.trim();
             if (line === '' || line.startsWith('#')) continue;
             const sepIndex = line.indexOf('|');
-            if (sepIndex === -1) {
-                console.warn(`[词典解析] 跳过无效行: ${line.substring(0, 30)}... 文件: ${fileNameForError}`);
-                continue;
-            }
+            if (sepIndex === -1) continue;
             let abbr = line.substring(0, sepIndex).trim();
             let meaning = line.substring(sepIndex + 1).trim();
             if (abbr === '' || meaning === '') continue;
@@ -513,7 +598,6 @@
         return fileName;
     }
     
-    // 智能搜索排序：标题匹配优先
     function sortEntriesByRelevance(entries, keyword) {
         if (!keyword.trim()) return entries;
         const kw = keyword.toLowerCase().trim();
@@ -522,7 +606,6 @@
             const bAbbrLow = b.abbr.toLowerCase();
             const aMeaningLow = a.meaning.toLowerCase();
             const bMeaningLow = b.meaning.toLowerCase();
-            
             const aAbbrMatch = aAbbrLow.includes(kw);
             const bAbbrMatch = bAbbrLow.includes(kw);
             if (aAbbrMatch !== bAbbrMatch) return aAbbrMatch ? -1 : 1;
@@ -545,22 +628,14 @@
         });
     }
     
-    // 显示骨架屏
     function showSkeleton(count = 6) {
         let skeletons = '';
         for (let i = 0; i < count; i++) {
-            skeletons += `
-                <div class="skeleton-card">
-                    <div class="skeleton-abbr"></div>
-                    <div class="skeleton-line"></div>
-                    <div class="skeleton-line short"></div>
-                </div>
-            `;
+            skeletons += `<div class="skeleton-card"><div class="skeleton-abbr"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></div>`;
         }
         dictContent.innerHTML = `<div class="dict-grid">${skeletons}</div>`;
     }
     
-    // 带超时的 fetch
     async function fetchWithTimeout(url, timeoutMs) {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
@@ -574,37 +649,27 @@
         }
     }
     
-    // 渲染侧边栏
     function renderSidebar() {
         if (!dictFileNames.length) {
-            dictListEl.innerHTML = `<li style="padding: 1rem; text-align:center; color:#ffb4a2;">⚠️ 无可用词典<br><span style="font-size:0.7rem;">请确保 dicts.txt 文件存在且包含词典文件名</span></li>`;
+            dictListEl.innerHTML = `<li style="padding: 1rem; text-align:center; color:#ffb4a2;">⚠️ 无可用词典<br><span style="font-size:0.7rem;">请确保 dicts.txt 存在</span></li>`;
             return;
         }
         const itemsHtml = dictFileNames.map((fileName, idx) => {
             const displayName = getDisplayNameFromFile(fileName);
             const activeClass = (idx === currentDictIndex) ? 'active' : '';
-            return `
-                <li class="dict-item ${activeClass}" data-index="${idx}">
-                    <button class="dict-btn">
-                        <span class="dict-name">📖 ${escapeHtml(displayName)}</span>
-                        <span class="dict-count" id="count-${idx}">?</span>
-                    </button>
-                </li>
-            `;
+            return `<li class="dict-item ${activeClass}" data-index="${idx}"><button><span class="dict-name">📖 ${escapeHtml(displayName)}</span><span class="dict-count" id="count-${idx}">?</span></button></li>`;
         }).join('');
         dictListEl.innerHTML = itemsHtml;
         
         document.querySelectorAll('.dict-item').forEach(item => {
-            const btn = item.querySelector('.dict-btn');
+            const btn = item.querySelector('button');
             if (btn) {
-                btn.addEventListener('click', () => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
                     const idx = parseInt(item.getAttribute('data-index'), 10);
                     if (!isNaN(idx) && idx !== currentDictIndex) {
                         switchToDict(idx);
-                        // 移动端切换后自动关闭侧边栏
-                        if (window.innerWidth <= 720 && sidebar.classList.contains('open')) {
-                            sidebar.classList.remove('open');
-                        }
+                        closeSidebar();
                     }
                 });
             }
@@ -614,11 +679,8 @@
     function updateSidebarActive() {
         document.querySelectorAll('.dict-item').forEach((item) => {
             const idxAttr = parseInt(item.getAttribute('data-index'), 10);
-            if (idxAttr === currentDictIndex) {
-                item.classList.add('active');
-            } else {
-                item.classList.remove('active');
-            }
+            if (idxAttr === currentDictIndex) item.classList.add('active');
+            else item.classList.remove('active');
         });
     }
     
@@ -627,18 +689,13 @@
         if (countSpan) countSpan.innerText = count;
     }
     
-    // 加载词典 (超时 + 友好错误)
     async function loadDictionary(index) {
         if (!dictFileNames.length || index >= dictFileNames.length || index < 0) {
             currentEntries = [];
             renderContent();
             return false;
         }
-        
-        // 取消之前的请求避免竞争
-        if (abortController) {
-            abortController.abort();
-        }
+        if (abortController) abortController.abort();
         abortController = new AbortController();
         
         const fileName = dictFileNames[index];
@@ -653,41 +710,26 @@
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const text = await response.text();
             const entries = parseTxtToEntries(text, fileName);
-            if (entries.length === 0) {
-                currentEntries = [];
-                statsInfoSpan.innerHTML = `⚠️ 无有效条目`;
-                updateSidebarCount(index, 0);
-                renderContent();
-                return false;
-            }
+            if (entries.length === 0) throw new Error('无有效条目');
             currentEntries = entries;
             statsInfoSpan.innerHTML = `✅ 共 ${currentEntries.length} 条`;
             updateSidebarCount(index, currentEntries.length);
             renderContent();
             return true;
         } catch (err) {
-            console.error(`加载词典失败 ${fileName}:`, err);
-            let errorMsg = `无法加载词典 “${escapeHtml(displayName)}”`;
-            if (err.name === 'AbortError') errorMsg = `加载超时或请求被取消`;
-            else if (err.message.includes('HTTP')) errorMsg = `网络错误 (${err.message})`;
-            else errorMsg = `加载失败: ${err.message || '未知错误'}`;
-            
             currentEntries = [];
             statsInfoSpan.innerHTML = `❌ 加载失败`;
             updateSidebarCount(index, '!');
-            dictContent.innerHTML = `<div class="error-message">❌ ${escapeHtml(errorMsg)}<br><span style="font-size:0.8rem;">💡 请检查网络或联系维护者，也可尝试刷新页面</span></div>`;
+            dictContent.innerHTML = `<div class="error-message">❌ 无法加载 “${escapeHtml(displayName)}”<br><span style="font-size:0.8rem;">${escapeHtml(err.message)}</span></div>`;
             return false;
         } finally {
-            if (abortController && abortController.signal.aborted === false) {
-                abortController = null;
-            }
+            if (abortController && !abortController.signal.aborted) abortController = null;
         }
     }
     
-    // 渲染右侧内容 (带搜索)
     function renderContent() {
         if (!dictFileNames.length) {
-            dictContent.innerHTML = `<div class="empty-message">📭 未检测到词典列表<br>请确保 dicts.txt 文件存在且配置正确</div>`;
+            dictContent.innerHTML = `<div class="empty-message">📭 未检测到词典列表<br>请确保 dicts.txt 文件存在</div>`;
             statsInfoSpan.innerHTML = '无词典配置';
             currentDictDisplaySpan.innerText = '无';
             return;
@@ -703,10 +745,7 @@
         let filtered = currentEntries;
         if (keyword !== '') {
             const lowerKw = keyword.toLowerCase();
-            filtered = currentEntries.filter(item => 
-                item.abbr.toLowerCase().includes(lowerKw) || 
-                item.meaning.toLowerCase().includes(lowerKw)
-            );
+            filtered = currentEntries.filter(item => item.abbr.toLowerCase().includes(lowerKw) || item.meaning.toLowerCase().includes(lowerKw));
             filtered = sortEntriesByRelevance(filtered, keyword);
         }
         
@@ -716,45 +755,25 @@
             return;
         }
         
-        const gridHtml = filtered.map(item => {
-            const highAbbr = highlightText(item.abbr, keyword);
-            const highMeaning = highlightText(item.meaning, keyword);
-            return `
-                <div class="card">
-                    <div class="abbr-area">
-                        <div class="abbr">${highAbbr}</div>
-                    </div>
-                    <div class="meaning-area">
-                        <div class="meaning">${highMeaning}</div>
-                    </div>
-                </div>
-            `;
-        }).join('');
+        const gridHtml = filtered.map(item => `<div class="card"><div class="abbr-area"><div class="abbr">${highlightText(item.abbr, keyword)}</div></div><div class="meaning-area"><div class="meaning">${highlightText(item.meaning, keyword)}</div></div></div>`).join('');
         dictContent.innerHTML = `<div class="dict-grid">${gridHtml}</div>`;
-        statsInfoSpan.innerHTML = `📚 共 ${currentEntries.length} 条 | 显示 ${filtered.length} 条 · 匹配关键词 ${filtered.length}`;
+        statsInfoSpan.innerHTML = `📚 共 ${currentEntries.length} 条 | 显示 ${filtered.length} 条`;
     }
     
-    // 切换词典
     async function switchToDict(newIndex) {
         if (newIndex === currentDictIndex) return;
         currentDictIndex = newIndex;
-        // 清空搜索框
         searchInput.value = '';
         currentSearchKeyword = '';
         updateSidebarActive();
-        if (dictFileNames[currentDictIndex]) {
-            currentDictDisplaySpan.innerText = getDisplayNameFromFile(dictFileNames[currentDictIndex]);
-        } else {
-            currentDictDisplaySpan.innerText = '?';
-        }
+        if (dictFileNames[currentDictIndex]) currentDictDisplaySpan.innerText = getDisplayNameFromFile(dictFileNames[currentDictIndex]);
         await loadDictionary(currentDictIndex);
     }
     
-    // 加载词典列表 (失败时显示错误，不提供降级词典)
     async function loadDictList() {
         try {
             const response = await fetchWithTimeout(DICT_LIST_FILE, FETCH_TIMEOUT);
-            if (!response.ok) throw new Error(`dicts.txt 不存在 (HTTP ${response.status})`);
+            if (!response.ok) throw new Error(`dicts.txt 不存在`);
             const text = await response.text();
             const lines = text.split(/\r?\n/);
             const files = [];
@@ -763,7 +782,7 @@
                 if (line === '' || line.startsWith('#')) continue;
                 files.push(line);
             }
-            if (files.length === 0) throw new Error('dicts.txt 内容为空，请添加至少一个词典文件名');
+            if (files.length === 0) throw new Error('dicts.txt 内容为空');
             dictFileNames = files;
             renderSidebar();
             currentDictIndex = 0;
@@ -773,16 +792,14 @@
                 await loadDictionary(0);
             }
         } catch (err) {
-            console.error('加载 dicts.txt 失败:', err);
             dictFileNames = [];
             renderSidebar();
-            dictContent.innerHTML = `<div class="error-message">❌ 无法读取词典列表文件 dicts.txt<br><span style="font-size:0.8rem;">${escapeHtml(err.message)}</span><br><br>💡 请确保项目根目录下存在 dicts.txt 文件，且每行填写一个位于 dicts/ 文件夹下的 .txt 文件名</div>`;
+            dictContent.innerHTML = `<div class="error-message">❌ 无法读取 dicts.txt<br><span style="font-size:0.8rem;">${escapeHtml(err.message)}</span><br><br>💡 请确保根目录存在 dicts.txt 文件</div>`;
             statsInfoSpan.innerHTML = '列表缺失';
             currentDictDisplaySpan.innerText = '无';
         }
     }
     
-    // 防抖搜索
     function onSearchInput() {
         if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
         searchDebounceTimer = setTimeout(() => {
@@ -799,42 +816,50 @@
         searchInput.focus();
     }
     
-    // 快捷键 Ctrl+K / Cmd+K 聚焦搜索
-    function handleGlobalKeydown(e) {
-        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-            e.preventDefault();
-            searchInput.focus();
-        }
-        // ESC 清空搜索
-        if (e.key === 'Escape' && document.activeElement === searchInput) {
-            resetSearch();
-        }
+    function openSidebar() {
+        sidebar.classList.add('open');
+        sidebarOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
     }
     
-    // 移动端侧边栏控制
-    function toggleSidebar() {
-        sidebar.classList.toggle('open');
-    }
-    
-    function closeSidebarOnClickOutside(e) {
-        if (window.innerWidth <= 720 && sidebar.classList.contains('open')) {
-            if (!sidebar.contains(e.target) && !menuToggleBtn.contains(e.target)) {
-                sidebar.classList.remove('open');
-            }
-        }
+    function closeSidebar() {
+        sidebar.classList.remove('open');
+        sidebarOverlay.classList.remove('active');
+        document.body.style.overflow = '';
     }
     
     function bindEvents() {
         searchInput.addEventListener('input', onSearchInput);
         clearSearchBtn.addEventListener('click', resetSearch);
-        menuToggleBtn.addEventListener('click', toggleSidebar);
-        document.body.addEventListener('click', closeSidebarOnClickOutside);
+        menuToggleBtn.addEventListener('click', openSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+        
+        // 点击主内容区域关闭侧边栏（移动端）
+        const mainContent = document.querySelector('.main-content');
+        if (mainContent) {
+            mainContent.addEventListener('touchstart', (e) => {
+                if (sidebar.classList.contains('open')) closeSidebar();
+            });
+        }
+        
         window.addEventListener('resize', () => {
-            if (window.innerWidth > 720 && sidebar.classList.contains('open')) {
+            if (window.innerWidth >= 768 && sidebar.classList.contains('open')) {
                 sidebar.classList.remove('open');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = '';
             }
         });
-        document.addEventListener('keydown', handleGlobalKeydown);
+        
+        // Ctrl+K / Cmd+K 聚焦搜索
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+            if (e.key === 'Escape' && document.activeElement === searchInput) {
+                resetSearch();
+            }
+        });
     }
     
     async function init() {
