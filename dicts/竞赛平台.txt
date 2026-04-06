@@ -14,7 +14,6 @@ AcWing|算法竞赛与面试学习平台 www.acwing.com
 51Nod|算法题与面试题平台 www.51nod.com
 USACO|美国信息学奥林匹克官方训练平台 www.usaco.org
 Timus|乌拉尔大学OJ acm.timus.ru
-EOJ|华东师范大学开源OJ eoj.i64d.com
 OpenJudge|北大开源OJ系统 openjudge.cn
 UOJ|Universal OJ，通用在线评测系统，由VFK等人开发，支持自定义比赛 uoj.ac
 QOJ|QOJ，高质量题目集合平台，收录了大量优质竞赛题目 qoj.ac
