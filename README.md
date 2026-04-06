@@ -3,7 +3,8 @@
 洛谷社区缩写/术语词典，支持多词典切换与实时搜索。  
 项目旨在帮助新手快速理解 OI/ACM 竞赛圈以及洛谷社区的黑话、梗和专业术语。
 
-**在线访问**：[https://luogu-dict.pages.dev](https://luogu-dict.pages.dev) | GitHub Pages：[https://mengtian1120.github.io/luogu-dict/](https://mengtian1120.github.io/luogu-dict/)
+**在线访问**：[https://luogu-dict.pages.dev](https://luogu-dict.pages.dev)
+GitHub Pages：[https://mengtian1120.github.io/luogu-dict/](https://mengtian1120.github.io/luogu-dict/)
 
 ## ✨ 功能特点
 
@@ -17,10 +18,12 @@
 项目通过 `dicts.txt` 定义词典列表，每行一个文件名（如 `OI语言.txt`）。  
 每个词典文件为纯文本格式，编码 **UTF-8**，位于 `dicts/` 文件夹下：
 
+```
 缩写|解释说明
 AC|Accepted / 答案正确，通过题目
 WA|Wrong Answer / 答案错误
 TLE|Time Limit Exceeded / 运行超时
+```
 
 > 注意：每行必须包含且仅一个竖线 `|`，左侧为缩写，右侧为含义。
 
