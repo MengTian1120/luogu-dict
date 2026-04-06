@@ -208,6 +208,7 @@
             border-radius: 40px;
             padding: 0.25rem 0.9rem;
             transition: 0.2s;
+            position: relative;
         }
 
         .search-box:focus-within {
@@ -245,8 +246,32 @@
             color: #e05a5a;
         }
 
-        .search-hint {
-            display: none;
+        /* 搜索快捷键提示 - 放在搜索框内部右侧 */
+        .search-kbd-hint {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: #e9ecef;
+            padding: 3px 8px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-family: monospace;
+            color: #5f7f9e;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            margin-left: 8px;
+            flex-shrink: 0;
+            pointer-events: none;
+        }
+        .search-kbd-hint kbd {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #2c3e50;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+            font-family: monospace;
         }
 
         /* GitHub 链接 - 移动端图标模式 */
@@ -428,7 +453,7 @@
             }
         }
 
-        /* 桌面样式：侧边栏常驻 */
+        /* 桌面样式：侧边栏常驻，快捷键提示正常显示 */
         @media (min-width: 768px) {
             .sidebar {
                 position: relative;
@@ -455,6 +480,18 @@
             }
             .top-bar {
                 padding: 1rem 1.5rem;
+            }
+        }
+
+        /* 移动端：快捷键提示简化或隐藏？保留但稍微缩小 */
+        @media (max-width: 480px) {
+            .search-kbd-hint kbd {
+                padding: 1px 4px;
+                font-size: 0.65rem;
+            }
+            .search-kbd-hint {
+                padding: 2px 5px;
+                gap: 2px;
             }
         }
 
@@ -504,6 +541,10 @@
                     <span>🔍</span>
                     <input type="text" id="searchInput" placeholder="搜索缩写或含义..." autocomplete="off" enterkeyhint="search">
                     <button class="clear-btn" id="clearSearchBtn" aria-label="清除">✖</button>
+                    <!-- Ctrl+K 快捷键提示 -->
+                    <div class="search-kbd-hint">
+                        <kbd>⌘</kbd><kbd>K</kbd>
+                    </div>
                 </div>
             </div>
             <a href="https://github.com/MengTian1120/luogu-dict" target="_blank" rel="noopener noreferrer" class="github-link" aria-label="GitHub">
@@ -555,6 +596,20 @@
     const dictContent = document.getElementById('dictContent');
     const currentDictDisplaySpan = document.getElementById('currentDictDisplay');
     const statsInfoSpan = document.getElementById('statsInfo');
+    
+    // 动态调整快捷键提示文字 (Mac/Win)
+    function updateKbdHint() {
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0 || 
+                      navigator.userAgent.toUpperCase().indexOf('MAC') >= 0;
+        const hintDiv = document.querySelector('.search-kbd-hint');
+        if (hintDiv) {
+            if (isMac) {
+                hintDiv.innerHTML = `<kbd>⌘</kbd><kbd>K</kbd>`;
+            } else {
+                hintDiv.innerHTML = `<kbd>Ctrl</kbd><kbd>K</kbd>`;
+            }
+        }
+    }
     
     // ---------- 辅助函数 ----------
     function escapeHtml(str) {
@@ -863,6 +918,7 @@
     }
     
     async function init() {
+        updateKbdHint();
         bindEvents();
         await loadDictList();
     }
