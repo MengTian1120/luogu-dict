@@ -1,0 +1,55 @@
+暴力|最直接的解法，通常复杂度高，只能通过部分数据点，但有时是正解的基础
+模拟|按题目描述直接实现过程
+枚举|遍历所有可能情况寻找答案，常与剪枝配合 (oi-wiki.org/basic/enumerate/)
+递归|函数调用自身，用于分治或树的遍历，需注意边界条件 (oi-wiki.org/basic/recursion/)
+分治|Divide and Conquer，将大问题分解为相似的子问题分别解决后合并 (oi-wiki.org/basic/divide-and-conquer/)
+贪心|Greedy Algorithm，每步取局部最优解，不保证全局最优但某些问题适用 (oi-wiki.org/basic/greedy/)
+回溯|深度优先搜索中撤销状态的过程 (oi-wiki.org/search/backtracking/)
+剪枝|在搜索中提前排除不可能的分支，减少计算量 (oi-wiki.org/search/optimization/#剪枝)
+记忆化|将计算结果存储起来避免重复计算 (oi-wiki.org/dp/memo/)
+动态规划|DP，将问题分解为重叠子问题，通过状态转移避免重复计算 (oi-wiki.org/dp/)
+二分|Binary Search，在有序序列中快速查找目标值，也用于二分答案 (oi-wiki.org/basic/binary/)
+三分|Ternary Search，用于求单峰函数的极值点
+双指针|Two Pointers，利用两个指针协同遍历，降低时间复杂度 (oi-wiki.org/misc/two-pointer/)
+滑动窗口|Sliding Window，维护一个动态区间，常用于子串/子数组问题 (oi-wiki.org/misc/sliding-window/)
+前缀和|Prefix Sum，快速求区间和的预处理方法 (oi-wiki.org/basic/prefix-sum/)
+差分|Difference Array，用于区间加法的预处理 (oi-wiki.org/basic/prefix-sum/#差分)
+离散化|将大范围数值映射到连续小范围坐标，节省空间和时间 (oi-wiki.org/misc/discrete/)
+状态压缩|State Compression，用二进制位表示状态，常用于DP (oi-wiki.org/dp/state/)
+记忆化搜索|Memoization，递归 + 缓存，避免重复计算子问题 (oi-wiki.org/dp/memo/)
+构造|Constructive Algorithm，直接构造出满足条件的解，而非逐步推导
+转化|Problem Transformation，将原问题转化为已知模型求解
+建模|Mathematical Modeling，将实际问题抽象为数学或图论模型
+逆向思维|Reverse Thinking，从结果反推过程，如倒序处理、反向建图
+容斥原理|Inclusion-Exclusion Principle，计算多个集合并集的大小 (oi-wiki.org/math/combinatorics/inclusion-exclusion/)
+抽屉原理|Pigeonhole Principle，若物品数多于容器数，则至少一个容器有多个物品
+归纳法|Mathematical Induction，从基础情况推导一般规律
+反证法|Proof by Contradiction，假设结论不成立推出矛盾，从而证明结论
+整体二分|Parallel Binary Search，批量处理多个二分询问 (oi-wiki.org/misc/parallel-binsearch/)
+CDQ分治|CDQ Divide and Conquer，处理多维偏序问题的离线分治算法 (oi-wiki.org/misc/cdq-divide/)
+Meet in the Middle|折半搜索，将问题分成两半分别计算后合并 (oi-wiki.org/search/bidirectional/)
+随机化|Randomized Algorithm，利用随机数简化问题或避免最坏情况
+爬山法|Hill Climbing，启发式局部搜索算法，不断向更优方向移动
+模拟退火|Simulated Annealing，以一定概率接受劣解，避免陷入局部最优 (oi-wiki.org/misc/simulated-annealing/)
+遗传算法|Genetic Algorithm，模拟自然选择过程的启发式优化算法
+主定理|Master Theorem，用于分析分治递归复杂度的方法 (oi-wiki.org/basic/complexity/#主定理)
+均摊分析|Amortized Analysis，分析数据结构在多次操作下的平均复杂度
+势能分析|Potential Method，均摊分析的一种，通过势能函数分析复杂度
+离线算法|Offline Algorithm，预先读入所有询问后批量处理
+在线算法|Online Algorithm，逐个处理询问，不能预知后续内容
+增量法|Incremental Method，逐个加入元素并维护当前结果
+分块|Block Decomposition，将数组分成若干块处理，平衡复杂度 (oi-wiki.org/ds/decompose/)
+根号分治|Root Decomposition，根据数据规模选择不同算法，阈值通常为 sqrt(n)
+阈值优化|Threshold Optimization，当数据量小于某值时切换算法
+二进制拆分|Binary Splitting，将整数拆分为2的幂次和，用于多重背包等
+对数级优化|Logarithmic Optimization，将线性操作优化为对数级，如倍增法
+倍增法|Binary Lifting，预处理 2^k 步信息，用于LCA、RMQ等 (oi-wiki.org/basic/binary-lifting/)
+差分约束|Difference Constraints，将不等式组转化为图论最短路问题 (oi-wiki.org/graph/diff-constraints/)
+哈希|Hash，将任意长度数据映射为固定长度指纹，用于快速比较 (oi-wiki.org/string/hash/)
+对拍|用暴力程序验证正解正确性的方法，常用于比赛调试
+打表|预先计算好答案存入数组，运行时直接输出
+特判|针对特殊数据专门处理，避免通用算法出错或超时
+常数优化|Constant Optimization，减少程序常数因子以提高运行效率
+卡常|通过常数级优化（如快读、寄存器、位运算）使程序在时间限制内通过
+空间换时间|Space-Time Tradeoff，用额外内存换取运行速度提升
+时间换空间|Time-Space Tradeoff，用额外计算换取内存占用减少
