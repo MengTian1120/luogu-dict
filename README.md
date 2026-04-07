@@ -63,7 +63,12 @@ TLE|Time Limit Exceeded / 运行超时
 欢迎在 [Issues](https://github.com/MengTian1120/luogu-dict/issues) 中提出建议或报告问题。
 
 洛谷贡献者：
+
 [hehaoze](https://www.luogu.com.cn/user/1032005)
+
 [Bathed_in_sunlight](https://www.luogu.com.cn/user/1625192)
+
 [Augustus_Deception](https://www.luogu.com.cn/user/1408853)
+
 [OIer_sundingjia](https://www.luogu.com.cn/user/704139)
+
