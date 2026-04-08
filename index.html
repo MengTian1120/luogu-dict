@@ -294,20 +294,8 @@
             color: var(--text-secondary);
         }
 
-        .clear-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            color: var(--text-secondary);
-            padding: 0 5px;
-            transition: color 0.2s;
-            touch-action: manipulation;
-        }
-        .clear-btn:active {
-            color: #e05a5a;
-        }
-
+        /* 移除清除按钮相关样式 —— 不再需要 .clear-btn 的样式 */
+        
         .search-kbd-hint {
             display: flex;
             align-items: center;
@@ -625,7 +613,7 @@
                 <div class="search-box">
                     <span>🔍</span>
                     <input type="text" id="searchInput" placeholder="搜索缩写或含义..." autocomplete="off" enterkeyhint="search">
-                    <button class="clear-btn" id="clearSearchBtn" aria-label="清除">✖</button>
+                    <!-- 移除了 clear-btn 按钮，避免手机端误触 -->
                     <div class="search-kbd-hint">
                         <kbd>Ctrl</kbd><kbd>K</kbd>
                     </div>
@@ -687,7 +675,7 @@
     const menuToggleBtn = document.getElementById('menuToggleBtn');
     const dictListEl = document.getElementById('dictList');
     const searchInput = document.getElementById('searchInput');
-    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    // 不再需要 clearSearchBtn
     const dictContent = document.getElementById('dictContent');
     const currentDictDisplaySpan = document.getElementById('currentDictDisplay');
     const statsInfoSpan = document.getElementById('statsInfo');
@@ -1040,6 +1028,7 @@
         }, SEARCH_DEBOUNCE_DELAY);
     }
     
+    // 原 resetSearch 函数保留，但移除对 clear-btn 的依赖，用户可通过 ESC 键清空（或手动删除）
     function resetSearch() {
         if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
         searchInput.value = '';
@@ -1062,7 +1051,7 @@
     
     function bindEvents() {
         searchInput.addEventListener('input', onSearchInput);
-        clearSearchBtn.addEventListener('click', resetSearch);
+        // 移除 clearSearchBtn 相关的事件绑定
         menuToggleBtn.addEventListener('click', openSidebar);
         sidebarOverlay.addEventListener('click', closeSidebar);
         themeToggle.addEventListener('click', toggleTheme);
@@ -1090,6 +1079,7 @@
                 e.preventDefault();
                 searchInput.focus();
             }
+            // 按 ESC 清空搜索框（模拟清除功能）
             if (e.key === 'Escape' && document.activeElement === searchInput) {
                 resetSearch();
             }
