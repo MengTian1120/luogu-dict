@@ -3,8 +3,9 @@
 洛谷社区缩写/术语词典，支持多词典切换与实时搜索。  
 项目旨在帮助新手快速理解 OI/ACM 竞赛圈以及洛谷社区的黑话、梗和专业术语。
 
-**在线访问**：[https://luogu-dict.pages.dev](https://luogu-dict.pages.dev)
-GitHub Pages：[https://mengtian1120.github.io/luogu-dict/](https://mengtian1120.github.io/luogu-dict/)
+**Cloudflare**：[luogu-dict.pages.dev](luogu-dict.pages.dev) & [lgdict.mengtian.dpdns.org](lgdict.mengtian.dpdns.org) (国内优先使用)
+
+GitHub Pages：[mengtian1120.github.io/luogu-dict/](mengtian1120.github.io/luogu-dict/)
 
 ## ✨ 功能特点
 
